@@ -1,0 +1,24 @@
+services:
+  redis:
+    image: redis:8.4.0-alpine
+    container_name: padegan-redis
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-password123}
+    command: redis-server --loglevel warning --save 60 1 --requirepass "password123"
+    #    command: redis-server --loglevel warning --save 60 1
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-password123}", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis_data:/var/lib/redis/data
+    networks:
+      - padegan-network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+    name: padegan-redis-data

@@ -1,0 +1,21 @@
+package fiberpkg
+
+import (
+	"net/http"
+
+	"github.com/ghafbu/padegan-backend/pkg/responsepkg"
+	"github.com/gofiber/fiber/v3"
+)
+
+func ReturnOk(ctx fiber.Ctx, _mess any, _data ...any) error {
+	var _res = responsepkg.NewV1().
+		SetStatus(true).
+		SetStatusCode(http.StatusOK).
+		SetMessage(_mess).
+		SetData(_data).
+		SetPath(ctx.OriginalURL()).
+		SetExecutionDuration(GetExecuteDuration(ctx)).
+		Build()
+
+	return ctx.Status(http.StatusOK).JSON(_res)
+}

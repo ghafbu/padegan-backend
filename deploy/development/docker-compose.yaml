@@ -1,0 +1,31 @@
+include:
+  - ./infrastructure/postgres/docker-compose.yml
+  - ./infrastructure/redis/docker-compose.yml
+
+services:
+  ####################### Application #######################
+  app:
+    build:
+      context: ../..
+      dockerfile: deploy/development/Dockerfile
+      target: development
+    container_name: padegan-backend
+    environment:
+      - ENV_PATH=deploy/development/.env
+    volumes:
+      - ../../:/app
+    networks:
+      - padegan-network
+    ports:
+      - "8000:80"
+      - "50000:50000"
+    restart: unless-stopped
+
+#networks:
+#  X-network:
+#    external: true
+
+networks:
+  padegan-network:
+    name: padegan-network
+    driver: bridge
